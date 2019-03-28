@@ -1,7 +1,7 @@
-from django.shortcuts import render
-from django.views.generic import TemplateView
+from django.shortcuts import render, redirect
+from django.views.generic import TemplateView, RedirectView
 
-# 함수 기반 뷰
+# 함수 기반 뷰 
 # def myview(request):
 #     context = {
 #         'hello': 'world',
@@ -9,7 +9,7 @@ from django.views.generic import TemplateView
 #     }
 #     return render(request, 'myapp/myview.html', context)
 
-# 클래스 기반 뷰(Base View 중 TemplateView)
+# 클래스 기반 뷰 (Base View 중 TemplateView)
 class MyTemplateView(TemplateView):
     template_name = 'myapp/myview.html'
 
@@ -24,3 +24,12 @@ class MyTemplateView(TemplateView):
 
 # MyTemplateView의 인스턴스 myview
 myview = MyTemplateView.as_view()
+
+
+# 함수 기반 뷰
+# def myview2(request):
+#     return redirect('https://m.naver.com')
+
+myview2 = RedirectView.as_view(
+    url='https://m.naver.com',
+)
