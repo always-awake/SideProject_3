@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
-from django.views.generic import TemplateView, RedirectView
+from django.views.generic import DetailView, ListView, TemplateView, RedirectView
+from .models import Post
 
 # 함수 기반 뷰 
 # def myview(request):
@@ -33,3 +34,9 @@ myview = MyTemplateView.as_view()
 myview2 = RedirectView.as_view(
     url='https://m.naver.com',
 )
+
+# DetailView
+post_detail = DetailView.as_view(model=Post)
+
+# ListView
+post_list = ListView.as_view(model=Post)
