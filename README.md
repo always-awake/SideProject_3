@@ -41,3 +41,39 @@
 - as_view
   - 함수를 만들어 주는 클래스 메소드
   - as_view 함수는 내부적으로 view란 이름을 갖고 있는 함수를 생성하여 리턴
+
+### Generic display views
+- 기본 조회 View인 DetailView, ListView
+
+#### DetailView 상속 관계
+- SingleObjectTemplateResponseMixin 상속: Teamplate 경로 생성 이후 작업은 TemplateTrsponseMixin에서 마저 처리
+  - TemplateResponseMixin 상속: template이 지정되면, view응답 생성
+- BaseDetailView 상속
+  - SingleObjectMixin 상속: 오브젝트 획득 지원
+  - View 상속: Http Method에 따라 관련 멤버 함수 호출
+#### DetailView
+- 1개 모델의 1개 Object에 대한 템플릿 처리
+- 모델명 소문자 이름의 Model Instance를 템플릿에 전달
+  - 지정 pk 혹은 slug에 대응하는 Model Instance
+
+#### ListView 상속 관계
+- MultipleObjectTemplateResponseMixin 상속: Teamplate 경로 생성 이후 작업은 TemplateTrsponseMixin에서 마저 처리
+  - TemplateTrsponseMixin 상속: template이 지정되면, view응답 생성
+- BaseListView
+  - MultipleObjectMixin상속 (ContextMixin 상속): 다수의 오브젝트 획득 지원
+  - View 상속: Http Method에 따라 관련 멤버 함수 호출
+#### ListView
+- 1개 모델에 대한 List 템플릿 처리
+  - '모델명 소문자_list' 이름의 QuerySet을 템플릿에 전달
+- 페이징 처리 지원
+```
+post_list2 = ListView.as_view(model=Post, paginate_by=10)
+```
+#
+```
+class PostListView(ListView):
+    model = Post
+    paginate_by = 10
+
+post_list3 = PostListView.as_view()
+```
