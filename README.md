@@ -77,3 +77,61 @@ class PostListView(ListView):
 
 post_list3 = PostListView.as_view()
 ```
+
+### CBV를 위한 Decorators
+- 파이썬의 장식자(Decorators)를 통해 View에 대양한 기능을 더해줄 수 있음
+- Decorator 문법은 기본적으로 함수에 대해 동작하지만 클래스에 대해 동작할 수 있게끔 할 수 있음
+
+#### 장식자 (Decorators)
+- 어떤 함수를 감싸는(Wrapping) 함수
+- 함수 기반 뷰에 장식자를 사용하는 방식 2가지 (두 가지는 동일하게 동작함, 그러나 첫번째 방식을 하용하는 것을 추천)
+```
+@login_required
+def protected_view1(request):
+    return render(request, 'myapp/secret.html)
+```
+#
+```
+def protected_view2(request):
+    return render(request, 'myapp/secret.html)
+
+protected_view2 = login_required(protexted_view2)
+```
+#### 장고 기본 Decorators 일부
+- django.views.decorators.http: 지정 method가 아닐 경우, HttpResponseNotAllowed 응답 반환
+  - require_http_method
+  - require_GET
+  - require_POST
+  - require_safe
+- django.contrib.auth.decorators
+  - user_passes_test: 지정 함수가 False를 반환하면 login_url 로 redirect
+  - login_required: 로그아웃 상황에서 login_url로 redirect
+  - permission_required: 지정 퍼미션이 없을 때, login_url로 redirect
+- django.contrib.admin.views.decorators
+  - staff_member_required: staff member가 아닐 경우 login_url로 이동
+#### CBV에 장식자 입히기
+- @ 를 이용한 장식자 사용 불가
+- CBV에 장식자 입히는 방법 1: 가독성이 좋지 않음
+```
+view_fn = SecretView.as_view()
+secret_view = login_required(view_fn)
+```
+- CBV에 장식자 입히는 방법 2: CBV의 멤버 함수 중 항상 호출되는 dispatch 함수 재정의
+```
+class SecretView(TemplateView): 
+    template_name = 'myapp/secret.html'
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwsrgs):
+        return super().dispatch(*args, **kwargs)
+
+secret_view = SecretView.as_view()
+```
+- (가장 추천)CBV에 장식자 입히는 방법 3: CBV의 멤버 함수 중 항상 호출되는 dispatch 함수에 장식자 적용
+```
+@method_decorator(login_required, name='dispatch)
+class SecretView(TemplateView):
+    template_name='myapp/secret.html'
+
+secret_view = SecretView.as_view()
+```
